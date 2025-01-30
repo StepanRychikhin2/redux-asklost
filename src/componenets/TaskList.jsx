@@ -8,10 +8,30 @@ const TaslList = () => {
 
 	const dispatch = useDispatch()
 	function addTask(repla) {
+		const maxId = taskData.tasks.reduce((max, repl) => {
+			return repl.id > max ? repl.id : max
+		}, 0)
+		console.log(taskData)
+		console.log(...taskData.tasks)
 		console.log(repla)
 		dispatch({
 			type: 'addTask',
-			taskawd: { id: 123, task: repla, completed: false },
+			taskawd: { id: maxId + 1, text: repla, completed: false },
+		})
+	}
+
+	function delTask(repla) {
+		console.log(repla)
+		dispatch({
+			type: 'delTask',
+			id: repla,
+		})
+	}
+	function canche(repla) {
+		console.log(repla)
+		dispatch({
+			type: 'ComtTask',
+			param: repla,
 		})
 	}
 	return (
@@ -44,21 +64,21 @@ const TaslList = () => {
 
 			<ul>
 				{console.log(taskData)}
-				{/* {taskData.map((data) => {
-		console.log(data)
-                    // dispatch({ type: 'replace', id: data.id, replace: data.repla })
+				{taskData.tasks.map((data) => {
+					// console.log(data)
+					// dispatch({ type: 'replace', id: data.id, replace: data.repla })
 					return (
 						<li key={data.id}>
 							<p>{data.text}</p>
 							<input
-								// onChange={chanChexkBox(data.id, data.completed)}
+								// onChange={console.log("cak")}
 								type="checkbox"
 								// checked={data.completed}
 							/>
-							<button>del</button>
+							<button onClick={(e) => delTask(data.id)}>del</button>
 						</li>
 					)
-				})} */}
+				})}
 			</ul>
 		</>
 	)
