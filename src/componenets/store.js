@@ -19,8 +19,8 @@ const reduser = (state = appState, action) => {
 	} else if (action.type === 'addTask') {
 		return { tasks: [...state.tasks, action.taskawd] }
 	} else if (action.type === 'delTask') {
-		return {...state.tasks,
-			tasks: appState.tasks.filter((red) => red.id !==  action.id)}
+		return {...state,
+			tasks: state.tasks.filter(task => task.id !== action.id)}
 	} else {
 		return state
 	}
