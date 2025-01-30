@@ -62,8 +62,7 @@ const TaslList = () => {
 				</section>
 			</header>
 
-			<ul>
-				{console.log(taskData)}
+			<ul className={css.list}>
 				{taskData.tasks.map((data) => {
 					// console.log(data)
 					// dispatch({ type: 'replace', id: data.id, replace: data.repla })
