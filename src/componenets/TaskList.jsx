@@ -1,18 +1,24 @@
 import { useSelector, useDispatch } from 'react-redux'
 import css from './Allstyle.module.css'
+import { useState } from 'react'
+import trush from "../trash.svg"
+
+
 
 const TaslList = () => {
 	const taskData = useSelector((state) => {
-		return state
+		return state.tasks
 	})
-
+	const filterData = useSelector((state) => {
+		return state.filters
+	})
 	const dispatch = useDispatch()
 	function addTask(repla) {
-		const maxId = taskData.tasks.reduce((max, repl) => {
+		const maxId = taskData.reduce((max, repl) => {
 			return repl.id > max ? repl.id : max
 		}, 0)
 		console.log(taskData)
-		console.log(...taskData.tasks)
+		console.log(...taskData)
 		console.log(repla)
 		dispatch({
 			type: 'addTask',
@@ -27,21 +33,44 @@ const TaslList = () => {
 			id: repla,
 		})
 	}
-	function canche(repla) {
+	function canche(repla, id) {
 		console.log(repla)
 		dispatch({
-			type: 'ComtTask',
+			type: 'replace',
+			param: repla,
+			id: id,
+		})
+	}
+	function filterChange(repla) {
+		console.log(repla)
+		dispatch({
+			type: 'filterRepla',
 			param: repla,
 		})
 	}
+
+	const filteredTasks = taskData.filter((task) => {
+		if (filterData === 'all') return true
+		if (filterData === 'active') return !task.completed
+		if (filterData === 'completed') return task.completed
+		return true
+	})
+	const activeTask = taskData.filter((task) => {
+		if (true === task.completed) return !task.completed
+		return true
+	})
+	const completTask = taskData.filter((task) => {
+		if (false === task.completed) return task.completed
+		return true
+	})
 	return (
-		<>
+		<div className={css.container}>
 			<header className={css.wrapper}>
 				<section className={css.section}>
 					<h2 className={css.title}>Tasks</h2>
 					<div>
-						<p className={css.text}>Active: 0</p>
-						<p className={css.text}>Completed: 0</p>
+						<p className={css.text}>Active: {activeTask.length}</p>
+						<p className={css.text}>Completed: {completTask.length}</p>
 					</div>
 				</section>
 				<section>
@@ -55,31 +84,29 @@ const TaslList = () => {
 				<section className={css.section}>
 					<h2 className={css.title}>Filter by status</h2>
 					<div className={css.wrapper}>
-						<button>All</button>
-						<button>Active</button>
-						<button>Completed</button>
+						<button onClick={() => filterChange('all')}>All</button>
+						<button onClick={() => filterChange('active')}>Active</button>
+						<button onClick={() => filterChange('completed')}>Completed</button>
 					</div>
 				</section>
 			</header>
 
 			<ul className={css.list}>
-				{taskData.tasks.map((data) => {
-					// console.log(data)
-					// dispatch({ type: 'replace', id: data.id, replace: data.repla })
-					return (
-						<li key={data.id}>
-							<p>{data.text}</p>
-							<input
-								// onChange={console.log("cak")}
-								type="checkbox"
-								// checked={data.completed}
-							/>
-							<button onClick={(e) => delTask(data.id)}>del</button>
-						</li>
-					)
-				})}
+				{filteredTasks.map((data) => (
+					<li className={css.item} key={data.id}>
+						<input
+							onChange={(e) => canche(e.target.checked, data.id)}
+							type="checkbox"
+							checked={data.completed}
+						/>
+						<p>{data.text}</p>
+						
+						<button className={css.btnDEl} onClick={() => delTask(data.id)}><img className={css.btnDElImg} src={trush}/></button>
+					</li>
+				))}
+				
 			</ul>
-		</>
+		</div>
 	)
 }
 

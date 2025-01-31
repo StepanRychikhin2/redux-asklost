@@ -8,19 +8,31 @@ const appState = {
 		{ id: 3, text: 'Discover Redux', completed: false },
 		{ id: 4, text: 'Build amazing apps', completed: false },
 	],
-	filters: {
-		status: 'all',
-	},
+	filters: "all"
 }
 
 const reduser = (state = appState, action) => {
 	if (action.type === 'replace') {
-		return console.log(action)
+		console.log(state)
+		return {
+			...state,
+			tasks: state.tasks.map((elem) =>
+				elem.id === action.id ? { ...elem, completed: action.param } : elem
+			),
+		}
 	} else if (action.type === 'addTask') {
 		return { tasks: [...state.tasks, action.taskawd] }
 	} else if (action.type === 'delTask') {
-		return {...state,
-			tasks: state.tasks.filter(task => task.id !== action.id)}
+		return {
+			...state,
+			tasks: state.tasks.filter((task) => task.id !== action.id),
+		}
+	} else if (action.type === 'filterRepla') {
+		console.log(state)
+		return {
+			...state,
+			filters: action.param,
+		}
 	} else {
 		return state
 	}
