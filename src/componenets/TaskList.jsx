@@ -1,18 +1,24 @@
 import { useSelector, useDispatch } from 'react-redux'
 import css from './Allstyle.module.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import trush from '../trash.svg'
-import { addTask, delTask, canche } from '../redux/tasks/actions'
-import { filterChange } from '../redux/filters/actions'
+import { addTask, delTask, canche } from '../redux/middleWare/logger'
+import { filterChange } from '../redux/filters/filterSlise'
+
+import { getTasks } from '../redux/middleWare/logger'
 const TaslList = () => {
 	const taskData = useSelector((state) => {
 		return state.tasks.tasks
 	})
 	const filterData = useSelector((state) => {
-		return state.filters
+		return state.filters.filters
 	})
 	// console.log(filterData)
-	const dispatch = useDispatch();
+	const dispatch = useDispatch()
+	useEffect(() => {
+		dispatch(getTasks())
+	}, [dispatch])
+
 	// const filteredTasks = taskData.filter((task) => {
 	// 	console.log(task)
 	// 	if (filterData === 'all') return true
@@ -20,15 +26,16 @@ const TaslList = () => {
 	// 	if (filterData === 'completed') return task.completed
 	// 	return true
 	// })
+	console.log(taskData)
 	const filteredTasks = taskData.filter((task) => {
-		console.log(task)
-		console.log(filterData.filters)
-		if (filterData.filters === 'all') return true;
-		if (filterData.filters === 'active') return !task.completed;
-		if (filterData.filters === 'completed') return task.completed;
-		return false;
-	});
-	
+		// console.log(task)
+		// console.log(filterData.filters)
+		if (filterData === 'all') return true
+		if (filterData === 'active') return !task.completed
+		if (filterData === 'completed') return task.completed
+		return false
+	})
+
 	console.log(filteredTasks)
 	const activeTask = taskData.filter((task) => {
 		if (true === task.completed) return !task.completed
@@ -51,7 +58,9 @@ const TaslList = () => {
 				<section>
 					<input id="addtaskInp" placeholder="addTask" />
 					<button
-						onClick={() => dispatch(addTask(document.getElementById('addtaskInp').value)) }
+						onClick={() =>
+							dispatch(addTask(document.getElementById('addtaskInp').value))
+						}
 					>
 						add Task
 					</button>
@@ -59,9 +68,13 @@ const TaslList = () => {
 				<section className={css.section}>
 					<h2 className={css.title}>Filter by status</h2>
 					<div className={css.wrapper}>
-						<button onClick={() => dispatch(filterChange('all'))  }>All</button>
-						<button onClick={() => dispatch(filterChange('active')) }>Active</button>
-						<button onClick={() => dispatch(filterChange('completed')) }>Completed</button>
+						<button onClick={() => dispatch(filterChange('all'))}>All</button>
+						<button onClick={() => dispatch(filterChange('active'))}>
+							Active
+						</button>
+						<button onClick={() => dispatch(filterChange('completed'))}>
+							Completed
+						</button>
 					</div>
 				</section>
 			</header>
@@ -70,13 +83,16 @@ const TaslList = () => {
 				{filteredTasks.map((data) => (
 					<li className={css.item} key={data.id}>
 						<input
-							onChange={(e) => dispatch(canche(e.target.checked, data.id)) }
+							onChange={(e) => dispatch(canche(e.target.checked, data.id))}
 							type="checkbox"
 							checked={data.completed}
 						/>
 						<p>{data.text}</p>
 
-						<button className={css.btnDEl} onClick={() => dispatch(delTask(data.id)) }>
+						<button
+							className={css.btnDEl}
+							onClick={() => dispatch(delTask(data.id))}
+						>
 							<img className={css.btnDElImg} src={trush} />
 						</button>
 					</li>
